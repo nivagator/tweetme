@@ -1,3 +1,5 @@
+{% include "tweets/search_form.html"  %} <br/>
+
 {% for obj in object_list %}
     {{ obj.content }}<br/>
     {{ obj.user }}<br/>
@@ -6,5 +8,9 @@
     <br/>
     <br/><br/>
 {% empty %}
-    <h2>No tweets yet.</h2>
+    {% if request.GET.q %}
+        <p>No Tweets found.</p>
+    {% else %}
+    <p>No tweets yet.</p>
+    {% endif %}
 {% endfor %}
