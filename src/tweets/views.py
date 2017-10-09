@@ -1,23 +1,23 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView
 
 from .forms import TweetModelForm
-from .mixins import FormUserNeededMixin
+from .mixins import FormUserNeededMixin, UserOwnerMixin
 from .models import Tweet
 
 # Create your views here.
 
 # CRUD - function and class based views 
 
-# Create
+# Create=======================================================================
 class TweetCreateView(FormUserNeededMixin, CreateView):
     form_class = TweetModelForm
     template_name = 'tweets/create_view.html'
     success_url = '/tweet/create/'
     # login_url = '/admin/'
 
-
+   
 #funciton based create view-------------------------
 # def tweet_create_view(request):
 #     form = TweetModelForm(request.POST or None)
@@ -33,7 +33,7 @@ class TweetCreateView(FormUserNeededMixin, CreateView):
 #--- end function based create view
 
 
-# Retrieve
+# Retrieve=======================================================================
 class TweetDetailView(DetailView):
     # template_name = "tweets/detail_view.html"
     queryset = Tweet.objects.all()
@@ -75,9 +75,15 @@ class TweetListView(ListView):
 #     return render(request, "tweets/detail_list.html", context)
 # ------END FUNCTION BASED VIEWS ---------------------------------
 
-# Update
+# Update=======================================================================
+# combination of detail and create
+class TweetUpdateView(LoginRequiredMixin, UserOwnerMixin, UpdateView):
+    queryset = Tweet.objects.all()
+    form_class = TweetModelForm
+    template_name = 'tweets/update_view.html'
+    success_url = "/tweet/"
+    # login_url = 
 
-# Delete
+# Delete=======================================================================
 
-# List / Search
-
+# List / Search=======================================================================
