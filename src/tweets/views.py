@@ -36,7 +36,7 @@ class TweetListView(ListView):
             qs = qs.filter(
                     Q(content__icontains=query) |
                     Q(user__username__icontains=query) 
-                )
+                    )
         return qs
 
     def get_context_data(self, *args, **kwargs):
