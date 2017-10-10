@@ -1,5 +1,32 @@
 {% extends "base.html" %}
 
+{% block script %}
+<script>
+    $(document).ready(function(){
+        console.log("working");
+        $.ajax({
+            url: "/api/tweet/",
+            method: "GET",
+            success: function(data){
+                console.log(data)
+                $.each(data, function(key, value){
+                    var tweetkey = key;
+                    var tweetContent = value.content;
+                    var tweetuser = value.user;
+                    $("#tweet-container").append(
+                        "<div class=\"media\"><div class=\"media-body\">" + tweetContent + "<br/> via " + tweetuser.username + " | " + "<a href='#'>View</a>" + "</div></div><hr/>"
+                    )
+                })
+            },
+            error: function(data){
+                console.log("error")
+                console.log(data)
+            }
+        })
+    });
+</script>
+{% endblock script %}
+
 {% block content %}
 
     <div class="row">
@@ -15,7 +42,9 @@
                     <hr/>
                 </div>
             {% endif %}
-
+        <div id="tweet-container">
+                
+        </div>
         {% for object in object_list %}
             <div class="media">
                 <div class="media-left">
