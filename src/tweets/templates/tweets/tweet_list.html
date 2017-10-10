@@ -23,10 +23,11 @@
             } else {
                 $.each(tweetList, function(key, value){
                     var tweetkey = key;
+                    var dateDisplay = value.date_display
                     var tweetContent = value.content;
                     var tweetuser = value.user;
                     $("#tweet-container").append(
-                        "<div class=\"media\"><div class=\"media-body\">" + tweetContent + "<br/> via " + tweetuser.username + " | " + "<a href='#'>View</a>" + "</div></div><hr/>"
+                        "<div class=\"media\"><div class=\"media-body\">" + tweetContent + "<br/> via " + tweetuser.username + " | " + dateDisplay + " | " + "<a href='#'>View</a>" + "</div></div><hr/>"
                     )
                 })
             }
