@@ -59,5 +59,7 @@ class UserProfile(models.Model):
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
     if created:
         new_profile = UserProfile.objects.get_or_create(user=instance)
+        # celery + redis 
+        # run deferred tasks like email tasks 
 
 post_save.connect(post_save_user_receiver, sender=settings.AUTH_USER_MODEL)
