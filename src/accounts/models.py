@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse_lazy
 
 # Create your models here.
 
@@ -47,3 +48,10 @@ class UserProfile(models.Model):
     def get_following(self):
         users = self.following.all()
         return users.exclude(username=self.user.username)
+
+    def get_follow_url(self):
+        return reverse_lazy("profiles:follow", kwargs={"username":self.user.username})
+
+    def get_absolute_url(self):
+        return reverse_lazy("profiles:detail", kwargs={"username":self.user.username})
+
