@@ -26,3 +26,5 @@ class Tweet(models.Model):
     #         raise ValidationError("Content: Cannot be ABC")
     #     return super(Tweet, self).clean(*args, **kwargs)
 
+    class Meta:
+        ordering = ['-timestamp']
