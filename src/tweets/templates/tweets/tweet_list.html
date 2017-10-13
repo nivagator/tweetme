@@ -29,12 +29,18 @@
             })
         }
         
-        function attachTweet(tweetValue, prepend){
+        function attachTweet(tweetValue, prepend, retweet){
             var dateDisplay = tweetValue.date_display
             var tweetContent = tweetValue.content;
             var tweetuser = tweetValue.user;
-            var isRetweet = tweetValue.is_retweet;
-            var tweetFormattedHTML = "<div class=\"media\">" + isRetweet + "<div class=\"media-body\">" + tweetContent + "<br/> via <a href='" + tweetuser.url + "'>" + tweetuser.username + "</a> | " + dateDisplay + " | " + "<a href='/tweet/" + tweetValue.id + "'>View</a>" + "</div></div><hr/>"
+            var tweetFormattedHTML;
+            if (retweet && tweetValue.parent){
+                var mainTweet = tweetValue.parent
+                tweetFormattedHTML = "<div class=\"media\"><div class=\"media-body\"><span class='grey-color'>Retweet via " + tweetuser.username + " on " + dateDisplay + "</span><br/>" + mainTweet.content + "<br/> via <a href='" + mainTweet.user.url + "'>" + mainTweet.user.username + "</a> | " + mainTweet.date_display + " | " + "<a href='/tweet/" + mainTweet.id + "'>View</a>" + "</div></div><hr/>"
+            } else {
+                tweetFormattedHTML = "<div class=\"media\"><div class=\"media-body\">" + tweetContent + "<br/> via <a href='" + tweetuser.url + "'>" + tweetuser.username + "</a> | " + dateDisplay + " | " + "<a href='/tweet/" + tweetValue.id + "'>View</a>" + "</div></div><hr/>"
+            }
+            
             if (prepend==true){
                 $("#tweet-container").prepend(tweetFormattedHTML)
             } else {
@@ -49,7 +55,12 @@
             } else {
                 $.each(tweetList, function(key, value){
                     var tweetkey = key;
-                    attachTweet(value)
+                    if (value.parent){
+                        attachTweet(value, false, true)
+                    } else {
+                        attachTweet(value)
+                    }
+                    
                 })
             }
         }
