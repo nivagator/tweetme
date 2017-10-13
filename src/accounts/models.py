@@ -44,10 +44,10 @@ class UserProfile(models.Model):
     objects = UserProfileManager()
 
     def __str__(self):
-        return str(self.following.all().count()) 
+        return str(self.following.all().count())
 
     def get_following(self):
-        users = self.following.all()
+        users  = self.following.all() # User.objects.all().exclude(username=self.user.username)
         return users.exclude(username=self.user.username)
 
     def get_follow_url(self):
