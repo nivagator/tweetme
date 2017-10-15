@@ -2,6 +2,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 from .validators import validate_content
@@ -12,6 +13,13 @@ class TweetManager(models.Manager):
             og_parent = parent_obj.parent
         else:
             og_parent = parent_obj
+
+        qs = self.get_queryset().filter(
+            user=user, parent=og_parent
+            )
+            
+        if qs.exists():
+            return None
 
         obj = self.model(
             parent = parent_obj,
