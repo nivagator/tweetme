@@ -6,11 +6,22 @@ from tweets.models import Tweet
 from .pagination import StandardResultsPagination
 from .serializers import TweetModelSerializer
 
+class LikeToggleAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, pk, format=None):
+        tweet_qs = Tweet.objects.filter(pk=pk)
+        message = "Like not allowed"
+        if request.user.is_authenticated():
+            is_liked = Tweet.objects.like_toggle(request.user, tweet_qs.first())
+            return Response({"liked": is_liked})
+        
+        return Response({"message":message}, status=400)
+
 class RetweetAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request, pk, format=None):
         tweet_qs = Tweet.objects.filter(pk=pk)
-        message = "Not allowed"
+        message = "Retweet not allowed"
         if tweet_qs.exists() and tweet_qs.count() == 1:
             if request.user.is_authenticated():
                 new_tweet = Tweet.objects.retweet(request.user, tweet_qs.first())
@@ -20,14 +31,6 @@ class RetweetAPIView(APIView):
                 message = "Cannot retweet the same tweet more than once."
         return Response({"message":message}, status=400)
         
-    # def __str__(self):
-    #     return 
-
-    # def __unicode__(self):
-    #     return 
-
-
-
 class TweetCreateAPIView(generics.CreateAPIView):
     serializer_class = TweetModelSerializer
     permission_classes = [permissions.IsAuthenticated]
