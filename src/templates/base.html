@@ -29,12 +29,13 @@
   </head>
   <body> 
     {% include "navbar.html" %}
+    
     <div class="container">
        
         {% block content %}
         {% endblock content %}
     </div>
-
+    {% include "reply-modal.html" %}
     <!--jQuery (necessary for Bootstrap''s JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!--script to load tweet data -->
@@ -93,6 +94,20 @@
                     }
                 })
                 
+            })
+
+            $(document.body).on("click",".tweet-reply",function(event){
+                
+                event.preventDefault()
+                console.log("reply clicked")
+                var this_ = $(this)
+                var parentId = this_.attr("data-id")
+                var username = this_.attr("data-user")
+                $("#replyModal").modal({})
+                $("#replyModal textarea").val("@" + username + " ")
+                $("#replyModal").on("shown.bs.modal", function(){
+                    $('textarea').focus()
+                })
             })
 
             $(document.body).on("click",".retweetBtn",function(event){
@@ -155,7 +170,7 @@
                     verb = 'Unlike'
                 }
 
-                tweetContent = tweetValue.content + "<br/> via <a href='" + tweetValue.user.url + "'>" + tweetValue.user.username + "</a> | " + tweetValue.date_display + " | " + "<a href='/tweet/" + tweetValue.id + "'>View</a> | " + "<a class='retweetBtn' href='/tweet/" + tweetValue.id + "/retweet'>Retweet</a>" + " | <a href='#' class='tweet-like' data-id=" + tweetValue.id + ">" + verb + " (" + tweetValue.likes + ")</a>"  + " | <a href='#' class='tweet-reply' data-id=" + tweetValue.id + ">Reply</a>"
+                tweetContent = tweetValue.content + "<br/> via <a href='" + tweetValue.user.url + "'>" + tweetValue.user.username + "</a> | " + tweetValue.date_display + " | " + "<a href='/tweet/" + tweetValue.id + "'>View</a> | " + "<a class='retweetBtn' href='/tweet/" + tweetValue.id + "/retweet'>Retweet</a>" + " | <a href='#' class='tweet-like' data-id='" + tweetValue.id + "'>" + verb + " (" + tweetValue.likes + ")</a>"  + " | <a href='#' class='tweet-reply' data-user='" + tweetValue.user.username + "' data-id='" + tweetValue.id + "'>Reply</a>"
 
                 var container = "<div class=\"media\"><div class=\"media-body\">" + preContent + tweetContent + "</div></div><hr/>"
 
@@ -238,14 +253,14 @@
   
           var charsStart = 140;
           var charsCurrent = 0;
-          $("#tweet-form").append("<span id='tweetCharsLeft'>" + charsStart + "</span>");
+          $(".tweet-form").append("<span class='tweetCharsLeft'>" + charsStart + "</span>");
   
-          $("#tweet-form textarea").keyup(function(event){
+          $(".tweet-form textarea").keyup(function(event){
               //console.log(event.key, event.timeStamp)
               var tweetValue = $(this).val()
               charsCurrent = charsStart - tweetValue.length
               //console.log(charsCurrent)
-              var spanChars = $("#tweetCharsLeft")
+              var spanChars = $(this).parent().parent().parent().find("span.tweetCharsLeft")
               spanChars.text(charsCurrent)
   
               if (charsCurrent > 0){
@@ -263,7 +278,7 @@
               }
           })
   
-          $("#tweet-form").submit(function(event){
+          $(".tweet-form").submit(function(event){
               event.preventDefault()
               console.log("submit pressed")
               var this_ = $(this)
@@ -277,6 +292,7 @@
                           this_.find("input[type=text], textarea").val("")
                           attachTweet(data, true)
                           updateHashLinks();
+                          $("#replyModal").modal("hide")
                           //console.log(data)
                           //fetchTweets()
                           //tweetList = data
