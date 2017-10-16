@@ -69,17 +69,27 @@
            
           var initialUrl = tweetContainer.attr("data-url") || "/api/tweet/";
           console.log(initialUrl)
+          
           $(document.body).on("click",".retweetBtn",function(event){
+              
               event.preventDefault()
               console.log("retweet clicked")
               var url = "/api" + $(this).attr("href")
+              console.log(url)
               $.ajax({
                   method: "GET",
                   url: url,
                   success: function(data){
-                      attachTweet(data, true, true)
-                      updateHashLinks();
-                      console.log(data)
+                    console.log(data)
+                    // if username is in api path ... ignore this
+                    if (initialUrl == "/api/tweet/"){
+                        attachTweet(data, true, true)
+                        updateHashLinks();
+                    } else {
+
+                    }
+                    
+                    
                   },
                   error: function(data){
                       console.log("error on retweet")
