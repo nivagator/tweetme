@@ -31,6 +31,18 @@ class RetweetAPIView(APIView):
                 message = "Cannot retweet the same tweet more than once."
         return Response({"message":message}, status=400)
         
+class TweetDetailAPIView(generics.ListAPIView):
+    queryset = Tweet.objects.all()
+    serializer_class = TweetModelSerializer
+    permission_classes = [permissions.AllowAny]
+    pagination_class = StandardResultsPagination
+
+    
+    def get_queryset(self, *args, **kwargs):
+        tweet_id = self.kwargs.get("pk")
+        qs = Tweet.objects.filter(pk=tweet_id)
+        return qs
+
 class TweetCreateAPIView(generics.CreateAPIView):
     serializer_class = TweetModelSerializer
     permission_classes = [permissions.IsAuthenticated]
