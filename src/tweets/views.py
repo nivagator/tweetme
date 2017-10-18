@@ -36,7 +36,7 @@ class TweetCreateView(FormUserNeededMixin, CreateView):
 class TweetDetailView(DetailView):
     queryset = Tweet.objects.all()
 
-class TweetListView(ListView):
+class TweetListView(LoginRequiredMixin, ListView):
     
     def get_queryset(self, *args, **kwargs):
         qs = Tweet.objects.all()
