@@ -20,6 +20,8 @@ class TweetManager(models.Manager):
 
         qs = self.get_queryset().filter(
             user=user, parent=og_parent
+            ).filter(
+                reply=False
             )
             
         if qs.exists():

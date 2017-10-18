@@ -8,7 +8,7 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
     date_display = serializers.SerializerMethodField()
     timesince = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
-    # did_like = serializers.SerializerMethodField()
+    did_like = serializers.SerializerMethodField()
     class Meta:
         model = Tweet
         fields = [
@@ -19,7 +19,7 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
             'date_display',
             'timesince',
             'likes',
-            # 'did_like',
+            'did_like',
         ]
 
     def get_date_display(self, obj):
@@ -31,13 +31,16 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
     def get_likes(self, obj):
         return obj.liked.all().count()
     
-    # def get_did_like(self, obj):
-    #     request = self.context.get("request")
-    #     user = request.user
-    #     if user.is_authenticated():
-    #         if user in obj.liked.all():
-    #             return True
-    #     return False
+    def get_did_like(self, obj):
+        request = self.context.get("request")
+        try:
+            user = request.user
+            if user.is_authenticated():
+                if user in obj.liked.all():
+                    return True
+        except:
+            pass
+        return False
 
 class TweetModelSerializer(serializers.ModelSerializer):
     parent_id = serializers.CharField(write_only=True, required=False)
@@ -66,10 +69,13 @@ class TweetModelSerializer(serializers.ModelSerializer):
 
     def get_did_like(self, obj):
         request = self.context.get("request")
-        user = request.user
-        if user.is_authenticated():
-            if user in obj.liked.all():
-                return True
+        try:
+            user = request.user
+            if user.is_authenticated():
+                if user in obj.liked.all():
+                    return True
+        except:
+            pass
         return False
 
     def get_is_retweet(self, obj):
